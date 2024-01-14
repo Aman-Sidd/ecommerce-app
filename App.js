@@ -1,13 +1,20 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import StackNavigator from "./navigation/StackNavigator";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { ModalPortal } from "react-native-modals";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   return (
-    <>
-      <StatusBar translucent={true} backgroundColor="#00CED1" />
-      <StackNavigator />
-    </>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Provider store={store}>
+        <StatusBar translucent={true} backgroundColor="#00CED1" />
+        <StackNavigator />
+        <ModalPortal />
+      </Provider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -8,7 +8,7 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
@@ -18,12 +18,24 @@ import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { BackgroundImage } from "react-native-elements/dist/config";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/CartReducer";
 
 const ProductInfoScreen = () => {
   const route = useRoute();
   const carouselImages = route.params.carouselImages;
   const { width } = Dimensions.get("window");
   const height = (width * 100) / 100;
+  const dispatch = useDispatch();
+  const [addedToCart, setAddedToCart] = useState(false);
+
+  const addItemToCart = (item) => {
+    setAddedToCart(true);
+    dispatch(addToCart(item));
+    setTimeout(() => {
+      setAddedToCart(false);
+    }, 60000);
+  };
 
   return (
     <ScrollView style={{ flex: 1, marginTop: 32, backgroundColor: "white" }}>
@@ -183,6 +195,9 @@ const ProductInfoScreen = () => {
       </Text>
 
       <Pressable
+        onPress={() => {
+          addItemToCart(route?.params?.item);
+        }}
         style={{
           backgroundColor: "#FFC72C",
           padding: 10,
@@ -192,7 +207,7 @@ const ProductInfoScreen = () => {
           margin: 10,
         }}
       >
-        <Text>Add to Cart</Text>
+        {addedToCart ? <Text>Added to Cart</Text> : <Text>Add to Cart</Text>}
       </Pressable>
       <Pressable
         style={{
