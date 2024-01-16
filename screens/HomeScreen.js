@@ -12,6 +12,7 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SliderBox } from "react-native-image-slider-box";
 import axios from "axios";
@@ -20,6 +21,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { BottomModal, ModalContent, SlideAnimation } from "react-native-modals";
+import Header from "../components/Header";
 
 const HomeScreen = () => {
   const list = [
@@ -235,36 +237,7 @@ const HomeScreen = () => {
         }}
       >
         <ScrollView>
-          <View
-            style={{
-              backgroundColor: "#00CED1",
-              padding: 10,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginHorizontal: 7,
-                gap: 10,
-                backgroundColor: "white",
-                borderRadius: 3,
-                height: 38,
-                flex: 1,
-              }}
-            >
-              <AntDesign
-                style={{ paddingLeft: 10 }}
-                name="search1"
-                size={24}
-                color="black"
-              />
-              <TextInput placeholder="Search Amazon.in" />
-            </Pressable>
-            <Feather name="mic" size={24} color="black" />
-          </View>
+          <Header />
           <Pressable
             onPress={() => setModalVisible(true)}
             style={{
@@ -505,6 +478,10 @@ const HomeScreen = () => {
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Pressable
+              onPress={() => {
+                setModalVisible(false);
+                navigation.navigate("Address");
+              }}
               style={{
                 width: 140,
                 height: 140,
@@ -516,9 +493,48 @@ const HomeScreen = () => {
                 alignItems: "center",
               }}
             >
-              <Text>Add an address or pick-up point</Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#0066b2",
+                  fontWeight: "500",
+                }}
+              >
+                Add an address or pick-up point
+              </Text>
             </Pressable>
           </ScrollView>
+          <View style={{ flexDirection: "column", gap: 7, marginBottom: 30 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <Entypo name="location-pin" size={22} color="#0066b2" />
+              <Text style={{ color: "#0066b2", fontWeight: "400" }}>
+                Enter an Indian pincode
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <Ionicons name="locate-sharp" size={22} color="#0066b2" />
+              <Text style={{ color: "#0066b2", fontWeight: "400" }}>
+                Use My Current location
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <AntDesign
+                name="earth"
+                style={{ marginRight: 3 }}
+                size={18}
+                color="#0066b2"
+              />
+              <Text style={{ color: "#0066b2", fontWeight: "400" }}>
+                Deliver outside India
+              </Text>
+            </View>
+          </View>
         </ModalContent>
       </BottomModal>
     </>

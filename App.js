@@ -5,15 +5,18 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { ModalPortal } from "react-native-modals";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { UserContextProvider } from "./context/UserContext";
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider store={store}>
-        <StatusBar translucent={true} backgroundColor="#00CED1" />
-        <StackNavigator />
-        <ModalPortal />
-      </Provider>
+      <UserContextProvider>
+        <Provider store={store}>
+          <StatusBar translucent={true} backgroundColor="#00CED1" />
+          <StackNavigator />
+          <ModalPortal />
+        </Provider>
+      </UserContextProvider>
     </GestureHandlerRootView>
   );
 }
