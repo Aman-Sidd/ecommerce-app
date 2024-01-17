@@ -14,6 +14,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import ProductInfoScreen from "../screens/ProductInfoScreen";
 import AddAddressScreen from "../screens/AddAddressScreen";
 import AddressScreen from "../screens/AddressScreen";
+import CartScreen from "../screens/CartScreen";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -52,7 +53,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Cart"
-        component={HomeScreen}
+        component={CartScreen}
         options={{
           tabBarLabel: "Cart",
           tabBarLevelStyle: { color: "#008E97" },

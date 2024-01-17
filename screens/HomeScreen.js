@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
@@ -22,6 +22,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { BottomModal, ModalContent, SlideAnimation } from "react-native-modals";
 import Header from "../components/Header";
+import myApi from "../api/myApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+import { UserContext } from "../context/UserContext";
 
 const HomeScreen = () => {
   const list = [
@@ -204,10 +208,46 @@ const HomeScreen = () => {
     { label: "Women's clothing", value: "women's clothing" },
   ]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
+
   const cart = useSelector((state) => state.cart.cart);
   console.log(cart);
 
   const navigation = useNavigation();
+
+  const { userId, setUserId } = useContext(UserContext);
+  const [addresses, setAddresses] = useState([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        const user = jwtDecode(token);
+        console.log("UseEffect userId", user.user_id);
+        setUserId(user.user_id);
+      } catch (err) {
+        console.log("Error fetching user... ", err);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const response = await myApi.get(`/addresses/${userId}`);
+        const { addresses } = response.data;
+        setAddresses(addresses);
+      } catch (err) {
+        console.log(
+          "Something went wrong while fetching addresses...",
+          err.data
+        );
+      }
+    };
+    if (userId) {
+      fetchAddress();
+    }
+  }, [userId]);
 
   const onGenderOpen = useCallback(() => {
     setOpen(true);
@@ -250,9 +290,15 @@ const HomeScreen = () => {
           >
             <Ionicons name="location-outline" size={24} color="black" />
             <Pressable onPress={() => setModalVisible(true)}>
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                Deliver to Aman - Chandigarh 140307
-              </Text>
+              {selectedAddress ? (
+                <Text>
+                  Deliver to {selectedAddress?.name} - {selectedAddress?.street}
+                </Text>
+              ) : (
+                <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                  Select an Address
+                </Text>
+              )}
             </Pressable>
             <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
           </Pressable>
@@ -477,6 +523,54 @@ const HomeScreen = () => {
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {addresses?.map((item, index) => (
+              <Pressable
+                key={index}
+                onPress={() => setSelectedAddress(item)}
+                style={{
+                  width: 140,
+                  height: 140,
+                  borderColor: "#D0D0D0",
+                  borderWidth: 1,
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 3,
+                  marginRight: 15,
+                  marginTop: 10,
+                  backgroundColor:
+                    selectedAddress === item ? "#FBCEB1" : "white",
+                }}
+              >
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+                >
+                  <Text style={{ fontSize: 13, fontWeight: "bold" }}>
+                    {item?.name}
+                  </Text>
+                  <Entypo name="location-pin" size={24} color="red" />
+                </View>
+                <Text
+                  numberOfLines={1}
+                  style={{ width: 130, fontSize: 13, textAlign: "center" }}
+                >
+                  {item?.houseNo},{item?.landmark}
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{ width: 130, fontSize: 13, textAlign: "center" }}
+                >
+                  {item?.street}
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{ width: 130, fontSize: 13, textAlign: "center" }}
+                >
+                  India, Bangalore
+                </Text>
+              </Pressable>
+            ))}
+
             <Pressable
               onPress={() => {
                 setModalVisible(false);

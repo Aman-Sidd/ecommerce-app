@@ -135,14 +135,15 @@ app.listen(port, () => {
 app.post("/addresses", async (req, res) => {
   try {
     const { userId, address } = req.body;
-
+    console.log("userId is", userId);
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      console.log("couldn't find user with userid ", userId);
+      return res.status(406).json({ message: "User not found." });
     }
-
-    user.addresses.push({ address });
+    console.log(address);
+    user.addresses.push(address);
 
     await user.save();
     return res.status(202).json({ message: "Address has been saved." });
@@ -166,6 +167,7 @@ app.get("/addresses/:userId", async (req, res) => {
 
     return res.status(200).json({ addresses });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
 });

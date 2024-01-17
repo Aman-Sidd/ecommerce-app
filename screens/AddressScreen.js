@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 
-const AddressScreen = () => {
+const AddressScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [houseNo, setHouseNo] = useState("");
@@ -25,19 +25,6 @@ const AddressScreen = () => {
   const [postalCode, setPostalCode] = useState("");
 
   const { userId, setUserId } = useContext(UserContext);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        const user = jwtDecode(token);
-        setUserId(user.userId);
-      } catch (err) {
-        console.log("Error fetching user... ", err);
-      }
-    };
-    fetchUser();
-  }, []);
 
   const handleAddAddress = async () => {
     try {
@@ -49,10 +36,19 @@ const AddressScreen = () => {
         landmark,
         postalCode,
       };
-      console.log(userId);
+
       const response = await myApi.post("/addresses", { userId, address });
-      console.log(response);
       Alert.alert("Success", "Address successfully added!");
+      setName("");
+      setMobileNo("");
+      setHouseNo("");
+      setStreet("");
+      setLandmark("");
+      setPostalCode("");
+
+      setTimeout(() => {
+        navigation.goBack();
+      }, 500);
     } catch (err) {
       console.log(err);
       Alert.alert("Failed", "Failed to add address!");
