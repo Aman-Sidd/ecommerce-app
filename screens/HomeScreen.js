@@ -236,6 +236,7 @@ const HomeScreen = () => {
       try {
         const response = await myApi.get(`/addresses/${userId}`);
         const { addresses } = response.data;
+        addresses.reverse();
         setAddresses(addresses);
       } catch (err) {
         console.log(

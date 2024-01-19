@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
@@ -7,23 +7,31 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import myApi from "../api/myApi";
 import { UserContext } from "../context/UserContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const AddAddressScreen = ({ navigation }) => {
   const [addresses, setAddresses] = useState([]);
   const { userId } = useContext(UserContext);
 
   useEffect(() => {
-    const fetchAddress = async () => {
-      try {
-        const response = await myApi.get(`/addresses/${userId}`);
-        const { addresses } = response.data;
-        setAddresses(addresses);
-      } catch (err) {
-        console.log("Something went wrong while fetching addresses...", err);
-      }
-    };
     fetchAddress();
   }, []);
+  const fetchAddress = async () => {
+    try {
+      const response = await myApi.get(`/addresses/${userId}`);
+      const { addresses } = response.data;
+      setAddresses(addresses.reverse());
+    } catch (err) {
+      console.log("Something went wrong while fetching addresses...", err);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddress();
+    }, [])
+  );
+
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false}>
