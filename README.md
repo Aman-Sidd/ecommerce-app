@@ -1,5 +1,5 @@
 Login Screen:
-<img src="https://github.com/Aman-Sidd/ecommerce-app/assets/67181624/03302fc0-f842-4a3e-997a-cc9342f21f3c)" height="200" width="200" />
+<img src="https://github.com/Aman-Sidd/ecommerce-app/assets/67181624/03302fc0-f842-4a3e-997a-cc9342f21f3c)" width="200" />
 
 Home Screen:
 ![Home screen](https://github.com/Aman-Sidd/ecommerce-app/assets/67181624/1f6bd093-651f-47c8-aa06-c5284efbcc82)
